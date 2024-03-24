@@ -1,13 +1,18 @@
-import { IsEnum, IsInt } from 'class-validator';
-import { ChannelEnum } from 'src/enums/channelEnum';
+import { IsEnum, IsInt, IsPositive, IsString } from 'class-validator';
+import { SortingEnum } from 'src/enums/sortingEnum';
 
 export class GetArticleQueryDto {
   @IsInt()
-  pageNumber: number;
+  @IsPositive()
+  page: number;
 
   @IsInt()
+  @IsPositive()
   pageSize: number;
 
-  @IsInt()
-  channelId: number;
+  @IsString()
+  search: string;
+
+  @IsEnum(SortingEnum)
+  pubDateSorting: SortingEnum;
 }

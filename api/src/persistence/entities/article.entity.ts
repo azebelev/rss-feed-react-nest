@@ -14,9 +14,6 @@ export class Article extends BasePkEntity {
   content: string;
 
   @Column()
-  contentSnippet: string;
-
-  @Column()
   link: string;
 
   @Column({ type: 'timestamptz' })
@@ -25,19 +22,22 @@ export class Article extends BasePkEntity {
   @Column()
   creator: string;
 
-  @Column({ nullable: true, type: 'jsonb' })
-  media?: {
-    type: string;
-    url: string;
-    height: number;
-    width: number;
-    credit: string;
-  };
+  @Column({ nullable: true })
+  mediaType?: string;
+
+  @Column({ nullable: true })
+  mediaUrl?: string;
+
+  @Column({ nullable: true })
+  mediaCredit?: string;
 
   @Column({ nullable: false })
   channelId: number;
 
-  @ManyToOne(() => Channel, (channel) => channel.articles, { nullable: false }) // Specify nullable: false
+  @ManyToOne(() => Channel, (channel) => channel.articles, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  }) // Specify nullable: false
   @JoinColumn({ name: 'channelId' })
   channel: Channel;
 }

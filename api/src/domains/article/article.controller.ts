@@ -1,5 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, ValidationPipe } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Query,
+} from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
+import { IntegerValidationPipe } from 'src/validation/integer.validation';
 import { ArticleService } from './article.service';
+import { ArticleResponseDto } from './dto/article-response.dto';
 import { GetArticleQueryDto } from './dto/get-article-query.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 
@@ -7,9 +18,17 @@ import { UpdateArticleDto } from './dto/update-article.dto';
 export class ArticleController {
   constructor(private readonly articleService: ArticleService) {}
 
-  @Get()
-  findForChannel(@Query(ValidationPipe) query:GetArticleQueryDto) {
-    return this.articleService.findForChannel(query);
+  @Get('channel/:channelId')
+  async findForChannel(
+    @Query() query: GetArticleQueryDto,
+    @Param('channelId', IntegerValidationPipe) channelId: number,
+  ) {
+    const data = await this.articleService.findForChannel(query, channelId);
+    const pureArticles = plainToInstance(ArticleResponseDto, data[0], {
+      excludeExtraneousValues: true,
+    });
+
+    return { articles: pureArticles, count: data[1] };
   }
 
   @Patch(':id')

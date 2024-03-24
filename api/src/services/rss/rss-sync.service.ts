@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as Parser from 'rss-parser';
 import { Article } from 'src/persistence/entities/article.entity';
 import { Channel } from 'src/persistence/entities/channel.entity';
+import { standardizeFeedUrl } from 'src/utils/standardizeFeedUrl';
 import { In, Repository } from 'typeorm';
 import { ChanelFeedDto } from './dto/chanel.dto';
 import { ArticleInitialCreate, ChanelInitialCreate } from './rss-sync-types';
@@ -27,11 +28,7 @@ export class RssSyncService {
     )) as unknown as ChanelFeedDto;
     const channel = this.ejectChanel(parsed);
     const articles = this.ejectArticles(parsed);
-    await this.syncDb(channel, articles);
-    return {
-      channel,
-      articles,
-    };
+    return await this.syncDb(channel, articles);
   }
 
   private async syncDb(
@@ -49,6 +46,7 @@ export class RssSyncService {
       await this.channelRepo.save(newChannel);
       newChannel.articles = articles.map((a) => this.articleRepo.create(a));
       await this.channelRepo.save(newChannel);
+      return true;
     } else {
       const guids = articles.map((a) => a.externalGuid);
       const alreadyInDbGuids = (
@@ -75,9 +73,9 @@ export class RssSyncService {
         url: dto.image.url,
         title: dto.image.title,
       },
-      pubDate: new Date(dto.pubDate),
+      pubDate: new Date(dto.pubDate ? dto.pubDate : dto.lastBuildDate),
       externalLastUpdate: new Date(dto.lastBuildDate),
-      feedUrl: dto.feedUrl,
+      feedUrl: standardizeFeedUrl(dto.feedUrl),
     };
   }
 
@@ -89,14 +87,10 @@ export class RssSyncService {
       contentSnippet: i.contentSnippet,
       link: i.link,
       pubDate: new Date(i.pubDate),
-      creator: i['dc:creator'],
-      media: {
-        type: i['media:content']?.$?.medium,
-        url: i['media:content']?.$?.url,
-        height: +i['media:content']?.$?.height,
-        width: +i['media:content']?.$?.width,
-        credit: i['media:credit'],
-      },
+      creator: i['dc:creator'] ?? '',
+      mediaType: i['media:content']?.$?.medium,
+      mediaUrl: i['media:content']?.$?.url,
+      mediaCredit: i['media:credit'],
     }));
   }
 }

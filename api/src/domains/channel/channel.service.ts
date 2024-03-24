@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Channel } from 'src/persistence/entities/channel.entity';
 import { RssSyncService } from 'src/services/rss/rss-sync.service';
 import { Repository } from 'typeorm';
 import { CreateChannelDto } from './dto/create-channel.dto';
-import { Channel } from './entities/channel.entity';
 
 @Injectable()
 export class ChannelService {
@@ -14,10 +14,10 @@ export class ChannelService {
   ) {}
 
   async create(createChannelDto: CreateChannelDto) {
-    const chanel = this.channelsRepo.findOne({
+    const chanel = await this.channelsRepo.findOne({
       where: { feedUrl: createChannelDto.feedUrl },
     });
-    if (chanel) throw new Error('channel already exists');
+    if (chanel) throw new ConflictException('Channel already exists');
     return await this.rssSyncService.sync(createChannelDto.feedUrl);
   }
 

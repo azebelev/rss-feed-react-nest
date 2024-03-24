@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { SortingEnum } from 'src/enums/sortingEnum';
 import { Article } from 'src/persistence/entities/article.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { GetArticleQueryDto } from './dto/get-article-query.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -16,15 +17,28 @@ export class ArticleService {
     return await this.articleRepo.insert(createArticleDto);
   }
 
-  async findForChannel({
-    pageSize,
-    pageNumber,
-    channelId,
-  }: GetArticleQueryDto) {
+  async findForChannel(
+    { pageSize, page, search, pubDateSorting }: GetArticleQueryDto,
+    channelId: number,
+  ) {
+    const where: FindOptionsWhere<Article> = {
+      channelId,
+    };
+    if (search) {
+      where.title = ILike(`%${search}%`);
+    }
+    const order: { [key: string]: 'ASC' | 'DESC' } = {};
+    if (pubDateSorting === SortingEnum.Asc) {
+      order.pubDate = 'ASC';
+    } else {
+      order.pubDate = 'DESC';
+    }
+
     return await this.articleRepo.findAndCount({
-      where: { channelId },
-      skip: pageSize * pageNumber - 1,
+      where,
+      skip: pageSize * (page - 1),
       take: pageSize,
+      order,
     });
   }
 

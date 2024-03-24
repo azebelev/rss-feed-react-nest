@@ -1,26 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
+import { ThemeProvider } from '@emotion/react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import './App.css';
+import { Layout } from './components/Layout';
+import Forbidden from './pages/Forbidden';
+import theme from './theme/theme';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { HomePage } from './pages/HomePage';
+import UserPage from './pages/UserPage';
+import AdminPage from './pages/AdminPage';
+
+const queryClient = new QueryClient();
 
 function App() {
     return (
-        <div className='App'>
-            <header className='App-header'>
-                <img src={logo} className='App-logo' alt='logo' />
-                <p>
-                    Edit <code>src/App.tsx</code> and save to reload.
-                </p>
-                <a
-                    className='App-link'
-                    href='https://reactjs.org'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                >
-                    Learn React
-                </a>
-            </header>
-        </div>
+        <ThemeProvider theme={theme}>
+            <QueryClientProvider client={queryClient}>
+                <Routes>
+                    <Route element={<Layout />}>
+                        <Route path='/' element={<HomePage />} />
+                        <Route path='/users-page' element={<UserPage />} />
+                        <Route path='/admin' element={<AdminPage />} />
+                        <Route path='/forbidden' element={<Forbidden />} />
+                    </Route>
+                </Routes>
+            </QueryClientProvider>
+        </ThemeProvider>
     );
 }
 
 export default App;
+
+//<Route path='/' element={<Navigate to='/users-page' replace />} />

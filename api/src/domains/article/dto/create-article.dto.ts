@@ -1,5 +1,5 @@
 import {
-  IsDateString,
+  IsDate,
   IsJSON,
   IsNotEmpty,
   IsNumber,
@@ -28,7 +28,7 @@ export class CreateArticleDto {
   link: string;
 
   @IsNotEmpty()
-  @IsDateString()
+  @IsDate()
   pubDate: Date;
 
   @IsNotEmpty()

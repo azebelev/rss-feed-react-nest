@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Channel } from 'src/persistence/entities/channel.entity';
@@ -12,10 +11,10 @@ export class CronService {
   constructor(
     @InjectRepository(Channel)
     private readonly channelRepo: Repository<Channel>,
-    private rssSyncService: RssSyncService
+    private rssSyncService: RssSyncService,
   ) {}
 
-  @Cron(CronExpression.EVERY_10_MINUTES)
+  @Cron(CronExpression.EVERY_30_MINUTES)
   async syncRssData() {
     const existingChannels = await this.channelRepo.find();
     await Promise.all(
@@ -26,4 +25,3 @@ export class CronService {
     );
   }
 }
-//this.configService.get('NY_TIMES_RSS_HOME_PAGE_URL')

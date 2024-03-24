@@ -4,7 +4,7 @@ import { ChannelController } from './channel.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Article } from 'src/persistence/entities/article.entity';
 import { RssSyncService } from 'src/services/rss/rss-sync.service';
-import { Channel } from './entities/channel.entity';
+import { Channel } from 'src/persistence/entities/channel.entity';
 
 @Module({
   imports:[TypeOrmModule.forFeature([Article,Channel])],

@@ -7,6 +7,6 @@ export class AppController {
 
   @Get()
   async getHello() {
-    return JSON.stringify( await this.appService.getHello());
+    return JSON.stringify(await this.appService.getHello());
   }
 }

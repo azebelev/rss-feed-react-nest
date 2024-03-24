@@ -1,5 +1,7 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { plainToInstance } from 'class-transformer';
 import { ChannelService } from './channel.service';
+import { ChannelResponseDto } from './dto/channel-response.dto';
 import { CreateChannelDto } from './dto/create-channel.dto';
 
 @Controller('channel')
@@ -12,8 +14,12 @@ export class ChannelController {
   }
 
   @Get()
-  findAll() {
-    return this.channelService.findAll();
+  async findAll() {
+    return plainToInstance(
+      ChannelResponseDto,
+      await this.channelService.findAll(),
+      { excludeExtraneousValues: true },
+    );
   }
 
   @Delete(':id')
