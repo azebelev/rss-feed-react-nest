@@ -10,9 +10,10 @@ import {
     Tooltip,
 } from '@mui/material';
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { UserRole } from '../../enums/userRole';
 import { useChannelsService } from '../../hooks/useChannelsService';
 import useChannelsStore from '../../store/channelsStore';
+import useUserStore from '../../store/userStore';
 import { FormWithValidation } from '../form/FormWithValidation';
 import { getAddChannelFormConfig } from '../form/formsConfigs/addNewChannelConfig';
 import { ConfirmationModal } from '../modals/ConfirmationModal';
@@ -24,11 +25,11 @@ export function ChannelControl() {
     const { activeChannel, setActiveChannel } = useChannelsStore(
         ({ activeChannel, setActiveChannel }) => ({ activeChannel, setActiveChannel }),
     );
+    const { user } = useUserStore(({ user }) => ({ user }));
+    const isAdmin = user?.role === UserRole.Admin;
     const [newChannelModalOpen, setNewChannelModalOpen] = useState(false);
     const [idForDelete, setIdForDelete] = useState<null | number>(null);
     const [selectIsOpen, setSelectIsOpen] = useState(false);
-
-    const location = useLocation();
 
     const handleChange = (e: SelectChangeEvent<any>) => {
         const activeChannel = channels?.filter((c) => c.id === e.target.value)?.[0];
@@ -42,7 +43,6 @@ export function ChannelControl() {
 
     const formConfig = getAddChannelFormConfig();
 
-    const isAdmin = location.pathname === '/admin';
     return (
         <Box>
             <CustomDialog

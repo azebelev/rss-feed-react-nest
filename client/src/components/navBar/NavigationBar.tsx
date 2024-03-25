@@ -1,26 +1,30 @@
 import MenuIcon from '@mui/icons-material/Menu';
-import { SxProps, useTheme } from '@mui/material';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-import { Link, matchPath, useLocation, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { UserRole } from '../../enums/userRole';
+import useUserStore from '../../store/userStore';
 import theme from '../../theme/theme';
+import { AuthBlock } from '../auth/AuthBlock';
 import { ReactLogo } from '../icons/Logo';
 import { AccountInfo } from './AccountInfo';
 import { ChannelControl } from './ChannelControl';
+import { PageLink } from './PageLink';
 
 export function NavigationBar() {
     const [anchorElNav, setAnchorElNav] = useState(null);
+    const { user } = useUserStore(({ user }) => ({ user }));
 
     const pages = [
-        { path: 'users-page', label: 'Users Page' },
-        { path: 'admin', label: 'Admin' },
+        { path: '', label: 'Home' },
+        { path: 'articles', label: 'Articles' },
+        ...(user?.role === UserRole.Admin ? [{ path: 'admin', label: 'Admin' }] : []),
     ];
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -102,7 +106,7 @@ export function NavigationBar() {
                     }}
                 >
                     {pages.map((page, index) => (
-                        <CustomLink
+                        <PageLink
                             key={page.path}
                             to={`/${page.path}`}
                             text={page.label}
@@ -111,50 +115,8 @@ export function NavigationBar() {
                     ))}
                 </Box>
                 <ChannelControl />
-                <AccountInfo />
+                {user ? <AccountInfo user={user} /> : <AuthBlock size='small' />}
             </Toolbar>
         </AppBar>
-    );
-}
-
-function CustomLink({ to, text, sx }: { to: string; text: string; sx?: SxProps }) {
-    const { pathname } = useLocation();
-    const navigate = useNavigate();
-    const { palette } = useTheme();
-
-    const isActive = matchPath(
-        {
-            path: to,
-            caseSensitive: false,
-            end: false,
-        },
-        pathname,
-    );
-
-    const handleButtonClick = () => {
-        navigate(to);
-    };
-
-    return (
-        <Button
-            onClick={handleButtonClick}
-            sx={{
-                px: '20px',
-                '&:hover': { backgroundColor: palette.tableBorder },
-                backgroundColor: isActive ? palette.primary.light : 'inherit',
-                textTransform: 'none',
-                ...sx,
-            }}
-        >
-            <Box
-                sx={{
-                    textDecoration: 'none',
-                    color: isActive ? palette.primary.dark : palette.secondary.contrastText,
-                    fontSize: '16px',
-                }}
-            >
-                {text}
-            </Box>
-        </Button>
     );
 }

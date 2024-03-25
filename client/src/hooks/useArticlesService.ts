@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import { useEffect, useState } from 'react';
 import { QueryClient, useMutation, useQuery } from 'react-query';
 import { UpdateArticleFormData } from '../components/form/formsConfigs/updateArticleFormConfig';
@@ -45,6 +46,7 @@ export function useArticlesService() {
     const [queryObject, setQueryObject] = useState<QueryObject>(deflateQueryObject);
     const api = useApi();
     const { activeChannel } = useChannelsStore(({ activeChannel }) => ({ activeChannel }));
+    const { enqueueSnackbar } = useSnackbar();
     const fetchArticles = () => {
         return activeChannel?.id
             ? api.get<ArticlesResponseDto>(
@@ -57,14 +59,28 @@ export function useArticlesService() {
         isError,
         isLoading: isLoadingChannels,
         refetch,
-    } = useQuery([QueryKeys.articles, activeChannel?.id], fetchArticles);
+    } = useQuery([QueryKeys.articles, activeChannel?.id], fetchArticles, {
+        onError: () => {
+            enqueueSnackbar('Fetching resource failed', {
+                variant: 'error',
+            });
+        },
+    });
     const { mutate, isLoading: isMutationLoading } = useMutation(
         (prop: { dto: UpdateArticleDto; articleId: number }) =>
             api.patch(`article/${prop.articleId}`, prop.dto),
         {
             onSuccess: async () => {
                 await queryClient.invalidateQueries([QueryKeys.articles, activeChannel?.id]);
+                enqueueSnackbar('Updated', {
+                    variant: 'success',
+                });
                 refetch();
+            },
+            onError: () => {
+                enqueueSnackbar('Update failed', {
+                    variant: 'error',
+                });
             },
         },
     );
@@ -77,8 +93,19 @@ export function useArticlesService() {
     const deleteArticle = async (id: number) => {
         await api
             .delete(`article/${id}`)
-            .then(() => setQueryObject({ ...queryObject }))
-            .catch((error) => console.log(error));
+            .then(() => {
+                setQueryObject({ ...queryObject });
+                enqueueSnackbar('Deleted', {
+                    variant: 'success',
+                });
+                refetch();
+            })
+            .catch((error) => {
+                console.log(error);
+                enqueueSnackbar('Not deleted', {
+                    variant: 'error',
+                });
+            });
     };
 
     useEffect(() => {

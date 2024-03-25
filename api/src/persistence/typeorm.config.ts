@@ -11,7 +11,7 @@ const configService = new ConfigService();
 export default new DataSource({
   type: 'postgres',
   url: configService.get<string>('PG_DB_CONNECTION_STRING'),
-  entities: [User, Article,Channel],
+  entities: [User, Article, Channel],
   migrations: [`${__dirname}/migrations/*{.ts,.js}`],
   migrationsTableName: 'migrations',
 });

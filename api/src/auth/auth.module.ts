@@ -13,6 +13,7 @@ import { RefreshJwtStrategy } from './strategies/refreshToken.strategy';
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],

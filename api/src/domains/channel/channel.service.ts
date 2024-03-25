@@ -22,10 +22,18 @@ export class ChannelService {
   }
 
   findAll() {
-    return this.channelsRepo.find();
+    try {
+      return this.channelsRepo.find();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   remove(id: number) {
-    return this.channelsRepo.delete(id);
+    try {
+      return this.channelsRepo.delete(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

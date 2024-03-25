@@ -9,7 +9,7 @@ type ChannelsStore = {
     activeChannel: Channel | null;
     setActiveChannel: (channel: Channel | null) => void;
 };
-const useChannelsStore = create<ChannelsStore>((set, get) => ({
+const useChannelsStore = create<ChannelsStore>((set) => ({
     activeChannel: null,
     setActiveChannel: (channel) => set({ activeChannel: channel }),
 }));

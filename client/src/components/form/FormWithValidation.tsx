@@ -10,11 +10,13 @@ export function FormWithValidation({
     config,
     onClose,
     onSubmit,
+    submitButtonText,
 }: {
     config: ValidationConfig;
     onClose: () => void;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onSubmit: (inputs: any) => Promise<void>;
+    submitButtonText?: string;
 }) {
     const getFieldComponent = (type: FormEntity['type']) => {
         switch (type) {
@@ -42,7 +44,7 @@ export function FormWithValidation({
             >
                 {({ errors, touched, resetForm }) => (
                     <Form>
-                        {config.props.map((p, i) => (
+                        {config.props.map((p) => (
                             <ValidationFieldWrapper
                                 key={p.name}
                                 name={p.name}
@@ -60,7 +62,7 @@ export function FormWithValidation({
                                 />
                             </ValidationFieldWrapper>
                         ))}
-                        <Stack gap={2} ml={2} direction={'row'} justifyContent={'left'}>
+                        <Stack gap={2} ml={2} mt={2} direction={'row'} justifyContent={'left'}>
                             <CancelButton
                                 onClick={() => {
                                     resetForm();
@@ -70,7 +72,9 @@ export function FormWithValidation({
                             >
                                 Cancel
                             </CancelButton>
-                            <Button type='submit'>Submit</Button>
+                            <Button type='submit'>
+                                {submitButtonText ? submitButtonText : 'Submit'}
+                            </Button>
                         </Stack>
                     </Form>
                 )}

@@ -1,33 +1,40 @@
 import { ThemeProvider } from '@emotion/react';
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { SnackbarProvider } from 'notistack';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Layout } from './components/Layout';
-import Forbidden from './pages/Forbidden';
-import theme from './theme/theme';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { HomePage } from './pages/HomePage';
-import UserPage from './pages/UserPage';
 import AdminPage from './pages/AdminPage';
+import ArticlesPage from './pages/ArticlesPage';
+import Forbidden from './pages/Forbidden';
+import { HomePage } from './pages/HomePage';
+import theme from './theme/theme';
 
 const queryClient = new QueryClient();
 
 function App() {
     return (
-        <ThemeProvider theme={theme}>
-            <QueryClientProvider client={queryClient}>
-                <Routes>
-                    <Route element={<Layout />}>
-                        <Route path='/' element={<HomePage />} />
-                        <Route path='/users-page' element={<UserPage />} />
-                        <Route path='/admin' element={<AdminPage />} />
-                        <Route path='/forbidden' element={<Forbidden />} />
-                    </Route>
-                </Routes>
-            </QueryClientProvider>
-        </ThemeProvider>
+        // <UnhandledErrorBoundary>
+        <SnackbarProvider
+            maxSnack={3}
+            autoHideDuration={3000}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+            <ThemeProvider theme={theme}>
+                <QueryClientProvider client={queryClient}>
+                    <Routes>
+                        <Route element={<Layout />}>
+                            <Route path='/' element={<HomePage />} />
+                            <Route path='/articles' element={<ArticlesPage />} />
+                            <Route path='/admin' element={<AdminPage />} />
+                            <Route path='/forbidden' element={<Forbidden />} />
+                        </Route>
+                    </Routes>
+                </QueryClientProvider>
+            </ThemeProvider>
+        </SnackbarProvider>
+        // </UnhandledErrorBoundary>
     );
 }
 
 export default App;
-
-//<Route path='/' element={<Navigate to='/users-page' replace />} />

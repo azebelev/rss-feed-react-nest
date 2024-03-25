@@ -7,7 +7,7 @@ import { RssSyncService } from 'src/services/rss/rss-sync.service';
 import { Channel } from 'src/persistence/entities/channel.entity';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([Article,Channel])],
+  imports: [TypeOrmModule.forFeature([Article, Channel])],
   controllers: [ChannelController],
   providers: [ChannelService, RssSyncService],
 })

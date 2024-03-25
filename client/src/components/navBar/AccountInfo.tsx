@@ -1,26 +1,26 @@
 import LogoutIcon from '@mui/icons-material/Logout';
 import PersonIcon from '@mui/icons-material/Person';
+import { useTheme } from '@mui/material';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import { useState } from 'react';
-//import { UserRoles } from '../types/UserTypes';
-import { useTheme } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { UserRole } from '../../enums/userRole';
+import { useAuthService } from '../../hooks/useAuth';
+import { User } from '../../store/userStore';
 import { ConfirmationModal } from '../modals/ConfirmationModal';
 import { Button } from '../styled/Button';
 import { CustomMenu } from '../styled/Menu';
 import { CustomTooltip } from '../styled/Tooltip';
 
-export function AccountInfo() {
+export function AccountInfo({ user }: { user: User }) {
     const [modalOpen, setModalOpen] = useState(false);
     const [anchorElUser, setAnchorElUser] = useState(null);
+    const { logout } = useAuthService();
+    const navigate = useNavigate();
 
     const { palette } = useTheme();
-    const tempUser = { name: 'andrew', role: 'admin', email: 'asd@gmail.com' };
-
-    if (!tempUser) {
-        return <></>;
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleOpenUserMenu = (event: any) => {
@@ -32,7 +32,8 @@ export function AccountInfo() {
     };
 
     const handleLogout = () => {
-        alert('need to add logout');
+        logout();
+        navigate('/');
     };
 
     const onModalClose = () => {
@@ -78,13 +79,13 @@ export function AccountInfo() {
             >
                 <Box px={1}>
                     <Typography fontSize={'16px'} color={palette.secondary.contrastText}>
-                        {tempUser.name}
+                        {user.name}
                     </Typography>
                     <Typography fontSize={'14px'} color={palette.secondary.dark}>
-                        {tempUser.role}
+                        {UserRole[user.role]}
                     </Typography>
                     <Typography color={palette.secondary.dark} fontSize={'14px'}>
-                        {tempUser.email}
+                        {user.email}
                     </Typography>
                     <Button
                         startIcon={<LogoutIcon />}

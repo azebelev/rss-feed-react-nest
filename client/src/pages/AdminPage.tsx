@@ -1,16 +1,21 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Box, Container, Divider, IconButton, Stack, TableContainer, Tooltip } from '@mui/material';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UpdateArticleFormData } from '../components/form/formsConfigs/updateArticleFormConfig';
 import { ConfirmationModal } from '../components/modals/ConfirmationModal';
 import { ServerSidePagination } from '../components/pagination/ServerSidePagination';
 import { Accordion } from '../components/surfaces/Accordion';
 import ArticleCard from '../components/surfaces/ArticleCard';
 import { FilterControls } from '../components/surfaces/FilterControls';
+import { UserRole } from '../enums/userRole';
 import { ArticleDto, useArticlesService } from '../hooks/useArticlesService';
-import { UpdateArticleDrawerForm } from './AdminPage/UpdateArticleDrawerForm';
+import useUserStore from '../store/userStore';
+import { UpdateArticleDrawerForm } from './AdminComponents/UpdateArticleDrawerForm';
 
 function AdminPage() {
+    const { user } = useUserStore(({ user }) => ({ user }));
+    const navigate = useNavigate();
     const { queryObject, setQueryObject, data, deleteArticle, updateArticle } =
         useArticlesService();
 
@@ -29,6 +34,7 @@ function AdminPage() {
             });
     };
 
+    if (user?.role !== UserRole.Admin) navigate('/forbidden');
     return (
         <>
             {articleForUpdate ? (

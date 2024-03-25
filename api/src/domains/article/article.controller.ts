@@ -6,8 +6,11 @@ import {
   Param,
   Patch,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
+import { AdminGuard } from 'src/auth/guards/admin.guard';
+import { JwtGuard } from 'src/auth/guards/jwt-auth.guard';
 import { IntegerValidationPipe } from 'src/validation/integer.validation';
 import { ArticleService } from './article.service';
 import { ArticleResponseDto } from './dto/article-response.dto';
@@ -31,11 +34,13 @@ export class ArticleController {
     return { articles: pureArticles, count: data[1] };
   }
 
+  @UseGuards(JwtGuard, AdminGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateArticleDto: UpdateArticleDto) {
     return this.articleService.update(+id, updateArticleDto);
   }
 
+  @UseGuards(JwtGuard, AdminGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.articleService.remove(+id);

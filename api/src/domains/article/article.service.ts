@@ -34,19 +34,31 @@ export class ArticleService {
       order.pubDate = 'DESC';
     }
 
-    return await this.articleRepo.findAndCount({
-      where,
-      skip: pageSize * (page - 1),
-      take: pageSize,
-      order,
-    });
+    try {
+      return await this.articleRepo.findAndCount({
+        where,
+        skip: pageSize * (page - 1),
+        take: pageSize,
+        order,
+      });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async update(id: number, updateArticleDto: UpdateArticleDto) {
-    return await this.articleRepo.update(id, updateArticleDto);
+    try {
+      return await this.articleRepo.update(id, updateArticleDto);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async remove(id: number) {
-    return await this.articleRepo.delete(id);
+    try {
+      return await this.articleRepo.delete(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

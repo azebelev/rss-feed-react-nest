@@ -9,8 +9,8 @@ export const getDbConfig = async (
 ): Promise<PostgresConnectionOptions> => ({
   type: 'postgres',
   url: configService.get('PG_DB_CONNECTION_STRING'),
-  entities: [User, Article,Channel],
-  logging: configService.get('NODE_ENV') === 'DEV',
+  entities: [User, Article, Channel],
+  //logging: configService.get('NODE_ENV') === 'DEV',
   migrations: [`${__dirname}/../persistence/migrations/*{.ts,.js}`],
   migrationsTableName: 'migrations',
   synchronize: false,

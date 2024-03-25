@@ -1,14 +1,11 @@
 import {
   IsDate,
-  IsJSON,
   IsNotEmpty,
   IsNumber,
   IsOptional,
   IsString,
   IsUrl,
-  Validate,
 } from 'class-validator';
-import { IsValidMedia } from '../validators/media.validator';
 
 export class CreateArticleDto {
   @IsNotEmpty()
@@ -36,15 +33,16 @@ export class CreateArticleDto {
   creator: string;
 
   @IsOptional()
-  @IsJSON()
-  @Validate(IsValidMedia)
-  media?: {
-    type: string;
-    url: string;
-    height: number;
-    width: number;
-    credit: string;
-  };
+  @IsString()
+  mediaType: string;
+
+  @IsOptional()
+  @IsString()
+  mediaUrl: string;
+
+  @IsOptional()
+  @IsString()
+  mediaCredit: string;
 
   @IsNotEmpty()
   @IsNumber()

@@ -1,4 +1,4 @@
 export enum ChannelEnum {
-    TopArticles,
-    Sports
+  TopArticles,
+  Sports,
 }

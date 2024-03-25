@@ -17,24 +17,44 @@ export class UserService {
 
   async create(createUserDto: CreateUserDto) {
     const user = this.userRepo.create(createUserDto);
-    await this.userRepo.save(user);
-    const { password, ...result } = user;
-    return result;
+    try {
+      await this.userRepo.save(user);
+    } catch (error) {
+      console.log(error);
+    }
+    const { name, email, role } = user;
+    return { name, email, role };
   }
 
   findAll() {
-    return this.userRepo.find();
+    try {
+      return this.userRepo.find();
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   findOne(id: number) {
-    return this.userRepo.findOne({ where: { id } });
+    try {
+      return this.userRepo.findOne({ where: { id } });
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepo.update(id, updateUserDto);
+    try {
+      return this.userRepo.update(id, updateUserDto);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   async remove(id: number) {
-     return await this.userRepo.delete(id);
+    try {
+      return await this.userRepo.delete(id);
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

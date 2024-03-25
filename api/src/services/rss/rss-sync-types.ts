@@ -4,7 +4,7 @@ import { Channel } from 'src/persistence/entities/channel.entity';
 
 export type ArticleInitialCreate = Omit<
   Article,
-  keyof BasePkEntity | 'channel'| 'channelId'
+  keyof BasePkEntity | 'channel' | 'channelId'
 >;
 
 export type ChanelInitialCreate = Omit<

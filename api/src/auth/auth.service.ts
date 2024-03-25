@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from 'src/domains/user/user.service';
 import { User } from 'src/persistence/entities/user.entity';
 
-const EXPIRE_TIME = 20 * 1000;
+const EXPIRE_TIME = 2000 * 1000;
 
 @Injectable()
 export class AuthService {
@@ -15,9 +15,10 @@ export class AuthService {
 
   async validateUser(email: string, password: string) {
     const user = await this.userService.findOneByEmail(email);
+
     if (user && (await bcrypt.compare(password, user.password))) {
-      const { password, ...result } = user;
-      return result;
+      const { name, role, email } = user;
+      return { name, role, email };
     }
     return null;
   }
@@ -27,13 +28,14 @@ export class AuthService {
       username: user.email,
       sub: {
         name: user.name,
+        role: user.role,
       },
     };
 
     return {
       user,
       backendTokens: {
-        accessToken: this.jwtService.sign(payload, { expiresIn: '20s' }),
+        accessToken: this.jwtService.sign(payload, { expiresIn: '2000s' }),
         refreshToken: this.jwtService.sign(payload, { expiresIn: '7d' }),
         expiresIn: new Date().setTime(new Date().getTime() + EXPIRE_TIME),
       },
@@ -45,6 +47,7 @@ export class AuthService {
       username: user.email,
       sub: {
         name: user.name,
+        role: user.role,
       },
     };
 

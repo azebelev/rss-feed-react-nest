@@ -35,9 +35,6 @@ export class RssSyncService {
     chanel: ChanelInitialCreate,
     articles: ArticleInitialCreate[],
   ) {
-    // this.articleRepo.manager.transaction( manager => {
-
-    // })
     const channelFromDb = await this.channelRepo.findOne({
       where: { feedUrl: chanel.feedUrl },
     });

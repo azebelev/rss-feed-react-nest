@@ -1,11 +1,12 @@
-import { Accordion, Chip, Container, Divider, Link, Stack, TableContainer } from '@mui/material';
+import { Chip, Container, Divider, Link, Stack, TableContainer } from '@mui/material';
 import React from 'react';
 import { ServerSidePagination } from '../components/pagination/ServerSidePagination';
+import { Accordion } from '../components/surfaces/Accordion';
 import ArticleCard from '../components/surfaces/ArticleCard';
-import { useArticlesService } from '../hooks/useArticlesService';
 import { FilterControls } from '../components/surfaces/FilterControls';
+import { useArticlesService } from '../hooks/useArticlesService';
 
-function UserPage() {
+function ArticlesPage() {
     const { queryObject, setQueryObject, data } = useArticlesService();
 
     return (
@@ -45,4 +46,4 @@ function UserPage() {
     );
 }
 
-export default UserPage;
+export default ArticlesPage;
