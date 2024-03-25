@@ -36,7 +36,7 @@ function FallbackComponent() {
             >
                 Oops! Something went wrong!
             </Typography>
-            <Button onClick={() => navigate('/user-page')} sx={{ mt: 2 }}>
+            <Button onClick={() => navigate('/')} sx={{ mt: 2 }}>
                 Go back
             </Button>
         </Box>

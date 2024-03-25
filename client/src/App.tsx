@@ -9,31 +9,32 @@ import ArticlesPage from './pages/ArticlesPage';
 import Forbidden from './pages/Forbidden';
 import { HomePage } from './pages/HomePage';
 import theme from './theme/theme';
+import { UnhandledErrorBoundary } from './UnhandledErrorBoundary';
 
 const queryClient = new QueryClient();
 
 function App() {
     return (
-        // <UnhandledErrorBoundary>
-        <SnackbarProvider
-            maxSnack={3}
-            autoHideDuration={3000}
-            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        >
-            <ThemeProvider theme={theme}>
-                <QueryClientProvider client={queryClient}>
-                    <Routes>
-                        <Route element={<Layout />}>
-                            <Route path='/' element={<HomePage />} />
-                            <Route path='/articles' element={<ArticlesPage />} />
-                            <Route path='/admin' element={<AdminPage />} />
-                            <Route path='/forbidden' element={<Forbidden />} />
-                        </Route>
-                    </Routes>
-                </QueryClientProvider>
-            </ThemeProvider>
-        </SnackbarProvider>
-        // </UnhandledErrorBoundary>
+        <UnhandledErrorBoundary>
+            <SnackbarProvider
+                maxSnack={3}
+                autoHideDuration={3000}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <ThemeProvider theme={theme}>
+                    <QueryClientProvider client={queryClient}>
+                        <Routes>
+                            <Route element={<Layout />}>
+                                <Route path='/' element={<HomePage />} />
+                                <Route path='/articles' element={<ArticlesPage />} />
+                                <Route path='/admin' element={<AdminPage />} />
+                                <Route path='/forbidden' element={<Forbidden />} />
+                            </Route>
+                        </Routes>
+                    </QueryClientProvider>
+                </ThemeProvider>
+            </SnackbarProvider>
+        </UnhandledErrorBoundary>
     );
 }
 
